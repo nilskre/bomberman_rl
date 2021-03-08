@@ -53,6 +53,7 @@ def act(self, game_state: dict) -> str:
     print(game_state)
     feature_vector = state_to_features(game_state)
     print("FEATURES")
+    print(feature_vector.shape)
     print(feature_vector)
 
     self.logger.debug("Querying model for action.")
