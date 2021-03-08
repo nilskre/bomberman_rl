@@ -3,8 +3,8 @@ import logging
 from fallbacks import pygame
 
 # Game properties
-COLS = 17
-ROWS = 17
+COLS = 9 #17
+ROWS = 9 #17
 CRATE_DENSITY = 0.75
 MAX_AGENTS = 2
 
@@ -12,7 +12,7 @@ MAX_AGENTS = 2
 MAX_STEPS = 400
 
 # GUI properties
-GRID_SIZE = 10
+GRID_SIZE = 14 #30
 WIDTH = 1000
 HEIGHT = 600
 GRID_OFFSET = [(HEIGHT - ROWS * GRID_SIZE) // 2] * 2
