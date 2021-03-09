@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 
-from settings import BOMB_TIMER, BOMB_POWER
+from agent_code.big_bertha_v1.features import Features
 
 ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
 
@@ -54,7 +54,6 @@ def act(self, game_state: dict) -> str:
     feature_vector = state_to_features(game_state)
     print("FEATURES")
     print(feature_vector.shape)
-    print(feature_vector)
 
     self.logger.debug("Querying model for action.")
     return np.random.choice(ACTIONS, p=self.model)
@@ -81,47 +80,20 @@ def state_to_features(game_state: dict) -> np.array:
     # For example, you could construct several channels of equal shape, ...
     channels = []
 
-    field_matrix = game_state["field"]
+    field_matrix = Features().get_field_state(game_state)
     channels.append(field_matrix)
 
-    own_position_x = game_state["self"][3][0]
-    own_position_y = game_state["self"][3][1]
-    own_position = np.zeros((field_matrix.shape[0], field_matrix.shape[1]))
-    own_position[own_position_x][own_position_y] = 1
+    own_position = Features().get_own_position(game_state)
     channels.append(own_position)
 
-    others_positions = np.zeros((field_matrix.shape[0], field_matrix.shape[1]))
-    for agent in game_state["others"]:
-        other_position_x = agent[3][0]
-        other_position_y = agent[3][1]
-        others_positions[other_position_x][other_position_y] = 1
+    others_positions = Features().get_others_positions(game_state)
     channels.append(others_positions)
 
-    positions_danger = np.zeros((field_matrix.shape[0], field_matrix.shape[1]))
-    for bomb in game_state["bombs"]:
-        time_passed = bomb[1]
-        time_needed_to_explode = BOMB_TIMER
-        bomb_x = bomb[0][0]
-        bomb_y = bomb[0][1]
-        # TODO: je weiter weg und je höher der timer noch mit einbeziehen
-        # set horizontally
-        for number in range(BOMB_POWER):
-            try:
-                positions_danger[bomb_x][bomb_y-number] = time_passed/time_needed_to_explode
-                positions_danger[bomb_x][bomb_y+number] = time_passed/time_needed_to_explode
-            except IndexError:
-                print("Out of playing field")
-
-        # set vertically
-        for number in range(BOMB_POWER):
-            try:
-                positions_danger[bomb_x-number][bomb_y] = time_passed/time_needed_to_explode
-                positions_danger[bomb_x+number][bomb_y] = time_passed/time_needed_to_explode
-            except IndexError:
-                print("Out of playing field")
-    print("DANGER")
-    print(positions_danger)
+    positions_danger = Features().get_position_danger(game_state)
     channels.append(positions_danger)
+
+    positions_desirability = Features().get_position_desirability(game_state)
+    channels.append(positions_desirability)
 
     # concatenate them as a feature tensor (they must have the same shape), ...
     stacked_channels = np.stack(channels)
