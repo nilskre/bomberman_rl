@@ -11,6 +11,6 @@ EXPERIENCE_BUFFER_SIZE = 8192
 BATCH_SIZE = 64  # Batch size should be <1% of the total experience buffer size
 
 GAMMA = 0.99
-EPSILON = 0.3
-EPSILON_MIN = 0.05
+EPSILON_START = 0.3
+EPSILON_END = 0.05
 EPSILON_DECAY = 0.996  # Diminishing Epsilon-Greedy

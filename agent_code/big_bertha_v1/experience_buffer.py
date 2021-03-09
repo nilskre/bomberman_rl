@@ -10,10 +10,10 @@ class ExperienceBuffer(object):
         self.filled = False
 
         # TODO: Normalize data for more efficient training, use float instead of int for numpy arrays
-        self.states = np.zeros((self.size, STATE_SHAPE), dtype=np.int8)  # depending on Nils state representation
-        self.actions = np.zeros((self.size, NUMBER_OF_ACTIONS), dtype=np.int8)  # one hot encoded
+        self.states = np.zeros((self.size, STATE_SHAPE), dtype=np.int16)
+        self.actions = np.zeros((self.size, NUMBER_OF_ACTIONS), dtype=np.int8)
         self.rewards = np.zeros(self.size, dtype=np.int16)
-        self.next_states = np.zeros((self.size, STATE_SHAPE), dtype=np.int8)
+        self.next_states = np.zeros((self.size, STATE_SHAPE), dtype=np.int16)
 
     def remember(self, state, action, reward, next_state):
         self.states[self.memory_index] = state
@@ -28,7 +28,6 @@ class ExperienceBuffer(object):
         if self.filled:
             indices = np.random.choice(self.size, batch_size)
         else:
-            # TODO: Only call sampling when number of instances remembered is greater or equal to the batch size
             indices = np.random.choice(self.memory_index + 1, batch_size)
 
         return self.states[indices], self.actions[indices], self.rewards[indices], self.next_states[indices]
