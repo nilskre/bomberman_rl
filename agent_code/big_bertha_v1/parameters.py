@@ -2,7 +2,7 @@ import events
 
 # Architecture
 ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
-STATE_SHAPE = 1445
+STATE_SHAPE = 1_445
 NUMBER_OF_ACTIONS = 6
 DENSE_LAYER_DIMS = 128
 
@@ -10,14 +10,18 @@ DENSE_LAYER_DIMS = 128
 ACTIVATION_FUNCTION = 'relu'
 LOSS_FUNCTION = 'mse'
 LEARNING_RATE = 0.0005
-EXPERIENCE_BUFFER_SIZE = 8192
-BATCH_SIZE = 64  # Batch size should be <1% of the total experience buffer size
+
+EXPERIENCE_BUFFER_SIZE_MIN = 8_192  # Batch size should be <1% of the total experience buffer size
+EXPERIENCE_BUFFER_SIZE_MAX = 65_536
+BATCH_SIZE = 64
+
 TRAINING_ROUNDS = 600
 
 GAMMA = 0.99
 EPSILON_START = 0.3
 EPSILON_END = 0.05
 EPSILON_DECAY = 0.996  # Diminishing Epsilon-Greedy
+UPDATE_PREDICT_MODEL = 5
 
 # RECORD_ENEMY_TRANSITIONS = 1.0  # record enemy transitions with probability ...
 

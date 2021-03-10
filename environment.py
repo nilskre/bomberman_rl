@@ -15,7 +15,7 @@ import events as e
 import settings as s
 from agents import Agent, SequentialAgentBackend
 from fallbacks import pygame
-from items import Coin, Explosion, Bomb
+from items import Bomb, Coin, Explosion
 
 WorldArgs = namedtuple("WorldArgs",
                        ["no_gui", "fps", "turn_based", "update_interval", "save_replay", "replay", "make_video", "continue_without_training"])
@@ -219,7 +219,9 @@ class GenericWorld:
         # Turn screenshots into videos
         if self.args.make_video:
             self.logger.debug(f'Turning screenshots into video files')
-            import subprocess, os, glob
+            import glob
+            import os
+            import subprocess
             subprocess.call(['ffmpeg', '-y', '-framerate', f'{self.args.fps}',
                              '-f', 'image2', '-pattern_type', 'glob', '-i', f'screenshots/{self.round_id}_*.png',
                              '-preset', 'veryslow', '-tune', 'animation', '-crf', '5', '-c:v', 'libx264', '-pix_fmt',
@@ -270,7 +272,9 @@ class GenericWorld:
         # Turn screenshots into videos
         if self.args.make_video:
             self.logger.debug(f'Turning screenshots into video files')
-            import subprocess, os, glob
+            import glob
+            import os
+            import subprocess
             subprocess.call(['ffmpeg', '-y', '-framerate', f'{self.args.fps}',
                              '-f', 'image2', '-pattern_type', 'glob', '-i', f'screenshots/{self.round_id}_*.png',
                              '-preset', 'veryslow', '-tune', 'animation', '-crf', '5', '-c:v', 'libx264', '-pix_fmt',

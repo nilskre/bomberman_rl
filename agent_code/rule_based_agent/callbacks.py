@@ -3,7 +3,7 @@ from random import shuffle
 
 import numpy as np
 
-from settings import ROWS, COLS
+from settings import COLS, ROWS
 
 
 def look_for_targets(free_space, start, targets, logger=None):

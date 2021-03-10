@@ -1,11 +1,12 @@
+from tensorflow.keras.layers import Activation, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
+
 from agent_code.big_bertha_v1.parameters import (ACTIVATION_FUNCTION,
                                                  DENSE_LAYER_DIMS,
                                                  LEARNING_RATE, LOSS_FUNCTION,
                                                  NUMBER_OF_ACTIONS,
                                                  STATE_SHAPE)
-from tensorflow.keras.layers import Activation, Dense
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
 
 
 # TODO: Normalize last layer, maybe softmax?

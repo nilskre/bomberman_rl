@@ -7,7 +7,7 @@ from inspect import signature
 from logging.handlers import RotatingFileHandler
 from time import time
 from types import SimpleNamespace
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 import numpy as np
 
