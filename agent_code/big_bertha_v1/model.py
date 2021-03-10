@@ -8,8 +8,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
 
+# TODO: Normalize last layer, maybe softmax?
 def compile_deep_q_network():
-    model = Sequential()([
+    model = Sequential([
         Dense(DENSE_LAYER_DIMS, input_shape=(STATE_SHAPE,)),
         Activation(ACTIVATION_FUNCTION),
         Dense(DENSE_LAYER_DIMS),

@@ -13,14 +13,14 @@ def setup(self):
         self.model = compile_deep_q_network()
     else:
         self.logger.info("Loading model...")
-        for filename in glob.glob("/models/*_recent"):
+        for filename in glob.glob("models/*_recent"):
             with open(filename, "r") as file:
                 self.model = load_model(file)
 
 
 def act(self, game_state: dict) -> str:
     feature_vector = state_to_features(game_state)
-
+    feature_vector = feature_vector[np.newaxis, :]
     rand = np.random.random()
     if self.train and rand < self.epsilon:
         action = np.random.randint(NUMBER_OF_ACTIONS)

@@ -1,12 +1,13 @@
+import glob
+import os
 from datetime import datetime
 from typing import List
 
 import numpy as np
 from agent_code.big_bertha_v1.features import state_to_features
-
-from experience_buffer import ExperienceBuffer
-from parameters import (BATCH_SIZE, EPSILON_DECAY, EPSILON_END, EPSILON_START,
-                        GAMMA, REWARDS)
+from agent_code.big_bertha_v1.experience_buffer import ExperienceBuffer
+from agent_code.big_bertha_v1.parameters import (BATCH_SIZE, EPSILON_DECAY, EPSILON_END, EPSILON_START,
+                                                 GAMMA, REWARDS, ACTIONS)
 
 
 def setup_training(self):
@@ -15,9 +16,12 @@ def setup_training(self):
 
 
 def game_events_occurred(self, old_game_state: dict, self_action: str, new_game_state: dict, events: List[str]):
+    if old_game_state is None:
+        return
+
     self.experience_buffer.remember(
         state_to_features(old_game_state),
-        self_action,
+        ACTIONS.index(self_action),
         reward_from_events(self, events),
         state_to_features(new_game_state)
     )
@@ -38,10 +42,13 @@ def game_events_occurred(self, old_game_state: dict, self_action: str, new_game_
 
 
 # Called at the end of each game or when the agent died to hand out final rewards.
+# TODO: eventually update experience buffer
+# TODO: actually the model should be saved after 500 games
 def end_of_round(self, last_game_state: dict, last_action: str, events: List[str]):
-    # TODO: eventually update experience buffer
+    for filename in glob.glob("models/*_recent"):
+        os.rename(filename, filename[:-7])
     current_time = datetime.now().strftime("%H_%M_%S")
-    self.model.save("{}_recent".format(current_time))
+    self.model.save("models/{}_recent".format(current_time))
 
 
 def reward_from_events(self, occurred_events: List[str]) -> int:

@@ -2,7 +2,7 @@ import events
 
 # Architecture
 ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
-STATE_SHAPE = 324
+STATE_SHAPE = 405
 NUMBER_OF_ACTIONS = 6
 DENSE_LAYER_DIMS = 128
 
@@ -27,16 +27,16 @@ REWARDS = {
     events.MOVED_RIGHT: -1,
     events.MOVED_UP: -1,
     events.MOVED_DOWN: -1,
-    events.WAITED: -1,
-    events.INVALID_ACTION: -1,
-    events.BOMB_DROPPED: -1,
-    events.BOMB_EXPLODED: -1,
-    events.CRATE_DESTROYED: -1,
-    events.COIN_FOUND: -1,
-    events.COIN_COLLECTED: -1,
-    events.KILLED_OPPONENT: -1,
-    events.KILLED_SELF: -1,
-    events.GOT_KILLED: -1,
-    events.OPPONENT_ELIMINATED: -1,
-    events.SURVIVED_ROUND: -1,
+    events.WAITED: -5,
+    events.INVALID_ACTION: -2,
+    events.BOMB_DROPPED: 30,
+    events.BOMB_EXPLODED: 30,
+    events.CRATE_DESTROYED: 30,
+    events.COIN_FOUND: 5,
+    events.COIN_COLLECTED: 20,
+    events.KILLED_OPPONENT: 100,
+    events.KILLED_SELF: -350,
+    events.GOT_KILLED: -300,
+    events.OPPONENT_ELIMINATED: 5,
+    events.SURVIVED_ROUND: 10,
 }
