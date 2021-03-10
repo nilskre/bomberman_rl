@@ -1,6 +1,8 @@
 import numpy as np
-
-from agent_code.big_bertha_v1.parameters import NUMBER_OF_ACTIONS, STATE_SHAPE, BATCH_SIZE, EXPERIENCE_BUFFER_SIZE
+from agent_code.big_bertha_v1.parameters import (BATCH_SIZE,
+                                                 EXPERIENCE_BUFFER_SIZE,
+                                                 NUMBER_OF_ACTIONS,
+                                                 STATE_SHAPE)
 
 
 class ExperienceBuffer(object):

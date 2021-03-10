@@ -1,6 +1,8 @@
-from agent_code.big_bertha_v1.parameters import DENSE_LAYER_DIMS, NUMBER_OF_ACTIONS, STATE_SHAPE, ACTIVATION_FUNCTION, \
-    LOSS_FUNCTION, LEARNING_RATE
-
+from agent_code.big_bertha_v1.parameters import (ACTIVATION_FUNCTION,
+                                                 DENSE_LAYER_DIMS,
+                                                 LEARNING_RATE, LOSS_FUNCTION,
+                                                 NUMBER_OF_ACTIONS,
+                                                 STATE_SHAPE)
 from tensorflow.keras.layers import Activation, Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam

@@ -1,101 +1,31 @@
-import os
-import pickle
-import random
+import glob
 
 import numpy as np
-
-from agent_code.big_bertha_v1.features import Features
-
-ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
+from agent_code.big_bertha_v1.features import state_to_features
+from agent_code.big_bertha_v1.model import compile_deep_q_network
+from agent_code.big_bertha_v1.parameters import ACTIONS, NUMBER_OF_ACTIONS
+from tensorflow.python.keras.models import load_model
 
 
 def setup(self):
-    """
-    Setup your code. This is called once when loading each agent.
-    Make sure that you prepare everything such that act(...) can be called.
-
-    When in training mode, the separate `setup_training` in train.py is called
-    after this method. This separation allows you to share your trained agent
-    with other students, without revealing your training code.
-
-    In this example, our model is a set of probabilities over actions
-    that are is independent of the game state.
-
-    :param self: This object is passed to all callbacks and you can set arbitrary values.
-    """
-    if self.train or not os.path.isfile("my-saved-model.pt"):
-        self.logger.info("Setting up model from scratch.")
-        weights = np.random.rand(len(ACTIONS))
-        self.model = weights / weights.sum()
+    if self.train:
+        self.logger.info("Setting up model from scratch...")
+        self.model = compile_deep_q_network()
     else:
-        self.logger.info("Loading model from saved state.")
-        with open("my-saved-model.pt", "rb") as file:
-            self.model = pickle.load(file)
+        self.logger.info("Loading model...")
+        for filename in glob.glob("/models/*_recent"):
+            with open(filename, "r") as file:
+                self.model = load_model(file)
 
 
 def act(self, game_state: dict) -> str:
-    """
-    Your agent should parse the input, think, and take a decision.
-    When not in training mode, the maximum execution time for this method is 0.5s.
-
-    :param self: The same object that is passed to all of your callbacks.
-    :param game_state: The dictionary that describes everything on the board.
-    :return: The action to take as a string.
-    """
-    # todo Exploration vs exploitation
-    random_prob = .1
-    if self.train and random.random() < random_prob:
-        self.logger.debug("Choosing action purely at random.")
-        # 80%: walk in any direction. 10% wait. 10% bomb.
-        return np.random.choice(ACTIONS, p=[.2, .2, .2, .2, .1, .1])
-
-    print("GAME STATE")
-    print(game_state)
     feature_vector = state_to_features(game_state)
-    print("FEATURES")
-    print(feature_vector.shape)
 
-    self.logger.debug("Querying model for action.")
-    return np.random.choice(ACTIONS, p=self.model)
+    rand = np.random.random()
+    if self.train and rand < self.epsilon:
+        action = np.random.randint(NUMBER_OF_ACTIONS)
+    else:
+        actions = self.model.predict(feature_vector)
+        action = np.argmax(actions)
 
-
-def state_to_features(game_state: dict) -> np.array:
-    """
-    *This is not a required function, but an idea to structure your code.*
-
-    Converts the game state to the input of your model, i.e.
-    a feature vector.
-
-    You can find out about the state of the game environment via game_state,
-    which is a dictionary. Consult 'get_state_for_agent' in environment.py to see
-    what it contains.
-
-    :param game_state:  A dictionary describing the current game board.
-    :return: np.array
-    """
-    # This is the dict before the game begins and after it ends
-    if game_state is None:
-        return None
-
-    # For example, you could construct several channels of equal shape, ...
-    channels = []
-
-    field_matrix = Features().get_field_state(game_state)
-    channels.append(field_matrix)
-
-    own_position = Features().get_own_position(game_state)
-    channels.append(own_position)
-
-    others_positions = Features().get_others_positions(game_state)
-    channels.append(others_positions)
-
-    positions_danger = Features().get_position_danger(game_state)
-    channels.append(positions_danger)
-
-    positions_desirability = Features().get_position_desirability(game_state)
-    channels.append(positions_desirability)
-
-    # concatenate them as a feature tensor (they must have the same shape), ...
-    stacked_channels = np.stack(channels)
-    # and return them as a vector
-    return stacked_channels.reshape(-1)
+    return ACTIONS[action]

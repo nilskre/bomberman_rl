@@ -1,4 +1,7 @@
+import events
+
 # Architecture
+ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
 STATE_SHAPE = 324
 NUMBER_OF_ACTIONS = 6
 DENSE_LAYER_DIMS = 128
@@ -14,3 +17,26 @@ GAMMA = 0.99
 EPSILON_START = 0.3
 EPSILON_END = 0.05
 EPSILON_DECAY = 0.996  # Diminishing Epsilon-Greedy
+
+# RECORD_ENEMY_TRANSITIONS = 1.0  # record enemy transitions with probability ...
+
+# Rewards
+# TODO: Add custom events for reward shaping
+REWARDS = {
+    events.MOVED_LEFT: -1,
+    events.MOVED_RIGHT: -1,
+    events.MOVED_UP: -1,
+    events.MOVED_DOWN: -1,
+    events.WAITED: -1,
+    events.INVALID_ACTION: -1,
+    events.BOMB_DROPPED: -1,
+    events.BOMB_EXPLODED: -1,
+    events.CRATE_DESTROYED: -1,
+    events.COIN_FOUND: -1,
+    events.COIN_COLLECTED: -1,
+    events.KILLED_OPPONENT: -1,
+    events.KILLED_SELF: -1,
+    events.GOT_KILLED: -1,
+    events.OPPONENT_ELIMINATED: -1,
+    events.SURVIVED_ROUND: -1,
+}
