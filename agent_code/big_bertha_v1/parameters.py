@@ -2,7 +2,7 @@ import events
 
 # Architecture
 ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
-STATE_SHAPE = 405
+STATE_SHAPE = 1445
 NUMBER_OF_ACTIONS = 6
 DENSE_LAYER_DIMS = 128
 
@@ -12,6 +12,7 @@ LOSS_FUNCTION = 'mse'
 LEARNING_RATE = 0.0005
 EXPERIENCE_BUFFER_SIZE = 8192
 BATCH_SIZE = 64  # Batch size should be <1% of the total experience buffer size
+TRAINING_ROUNDS = 600
 
 GAMMA = 0.99
 EPSILON_START = 0.3

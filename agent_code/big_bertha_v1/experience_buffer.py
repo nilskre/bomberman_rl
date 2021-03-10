@@ -1,7 +1,6 @@
 import numpy as np
 from agent_code.big_bertha_v1.parameters import (BATCH_SIZE,
                                                  EXPERIENCE_BUFFER_SIZE,
-                                                 NUMBER_OF_ACTIONS,
                                                  STATE_SHAPE)
 
 
@@ -11,11 +10,10 @@ class ExperienceBuffer(object):
         self.memory_index = 0
         self.filled = False
 
-        # TODO: Normalize data for more efficient training, use float instead of int for numpy arrays
-        self.states = np.zeros((self.size, STATE_SHAPE), dtype=np.int16)
-        self.actions = np.zeros((self.size, NUMBER_OF_ACTIONS), dtype=np.int8)
+        self.states = np.zeros((self.size, STATE_SHAPE), dtype=np.int8)
+        self.actions = np.zeros(self.size, dtype=np.int8)
         self.rewards = np.zeros(self.size, dtype=np.int16)
-        self.next_states = np.zeros((self.size, STATE_SHAPE), dtype=np.int16)
+        self.next_states = np.zeros((self.size, STATE_SHAPE), dtype=np.int8)
 
     def remember(self, state, action, reward, next_state):
         self.states[self.memory_index] = state
