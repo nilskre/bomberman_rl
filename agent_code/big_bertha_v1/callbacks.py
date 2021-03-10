@@ -14,8 +14,7 @@ def setup(self):
     else:
         self.logger.info("Loading model...")
         for filename in glob.glob("models/*_recent"):
-            with open(filename, "r") as file:
-                self.model = load_model(file)
+            self.model = load_model(filename)
 
 
 def act(self, game_state: dict) -> str:
