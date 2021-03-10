@@ -28,7 +28,10 @@ def state_to_features(game_state: dict) -> np.array:
 
 
 def get_field_state(game_state: dict) -> np.array:
-    return game_state["field"]
+    field = game_state["field"]
+    normalized_field = np.where(field==0, 0.5, field)
+    normalized_field = np.where(normalized_field==-1, 0, normalized_field)
+    return normalized_field
 
 
 def get_own_position(game_state: dict) -> np.array:
