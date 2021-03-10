@@ -43,7 +43,7 @@ def end_of_round(self, last_game_state: dict, last_action: str, events: List[str
 
     self.episodes += 1
     if self.episodes == UPDATE_PREDICT_MODEL:
-        self.target_model.set_weights(self.model.get_weights())
+        self.predict_model.set_weights(self.model.get_weights())
         self.episodes = 0
 
     if last_game_state["round"] == TRAINING_ROUNDS:
@@ -67,10 +67,11 @@ def update_q_values(self):
     states, actions, rewards, new_states = self.experience_buffer.sample()
 
     qs_current = self.model.predict(states)
-    qs_next = self.predict_model.predict(new_states)
+    qs_next_actual = self.predict_model.predict(new_states)
+    qs_next_train = self.model.predict(new_states)
     qs_target = qs_current.copy()
 
     batch_index = np.arange(BATCH_SIZE, dtype=np.int8)
 
-    qs_target[batch_index, actions] = rewards + GAMMA * np.max(qs_next, axis=1)
+    qs_target[batch_index, actions] = rewards + GAMMA * qs_next_actual[batch_index, np.argmax(qs_next_train, axis=1)]
     _ = self.model.fit(states, qs_target, verbose=0)
