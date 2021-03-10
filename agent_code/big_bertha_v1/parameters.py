@@ -21,7 +21,9 @@ GAMMA = 0.99
 EPSILON_START = 0.3
 EPSILON_END = 0.05
 EPSILON_DECAY = 0.996  # Diminishing Epsilon-Greedy
+
 UPDATE_PREDICT_MODEL = 5
+UPDATE_TENSORBOARD_EVERY = 5
 
 # RECORD_ENEMY_TRANSITIONS = 1.0  # record enemy transitions with probability ...
 

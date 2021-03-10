@@ -13,38 +13,57 @@ from agent_code.big_bertha_v1.parameters import (ACTIONS, BATCH_SIZE,
                                                  EXPERIENCE_BUFFER_SIZE_MIN,
                                                  GAMMA, REWARDS,
                                                  TRAINING_ROUNDS,
-                                                 UPDATE_PREDICT_MODEL)
+                                                 UPDATE_PREDICT_MODEL, UPDATE_TENSORBOARD_EVERY)
+from agent_code.big_bertha_v1.modifiedtensorboard import ModifiedTensorBoard
 
 
 def setup_training(self):
     self.experience_buffer = ExperienceBuffer()
-    self.episodes = 0
     self.epsilon = EPSILON_START
+
+    self.episodes_past = 0
+
+    self.episode_rewards = []
+    self.episode_reward = 0
+
+    current_time = datetime.now().strftime("%H_%M_%S")
+    self.tensorboard = ModifiedTensorBoard(log_dir="tensorboard_logs/{}".format(current_time))
 
 
 def game_events_occurred(self, old_game_state: dict, self_action: str, new_game_state: dict, events: List[str]):
     if old_game_state is None:
         return
 
+    reward = reward_from_events(self, events)
+
     self.experience_buffer.remember(
         state_to_features(old_game_state),
         ACTIONS.index(self_action),
-        reward_from_events(self, events),
+        reward,
         state_to_features(new_game_state)
     )
 
     update_q_values(self)
     self.epsilon = self.epsilon * EPSILON_DECAY if self.epsilon > EPSILON_END else EPSILON_END
+    self.episode_reward += reward
 
 
 def end_of_round(self, last_game_state: dict, last_action: str, events: List[str]):
     update_q_values(self)
     self.epsilon = self.epsilon * EPSILON_DECAY if self.epsilon > EPSILON_END else EPSILON_END
+    self.episode_reward += reward_from_events(self, events)
 
-    self.episodes += 1
-    if self.episodes == UPDATE_PREDICT_MODEL:
+    self.episode_rewards.append(self.episode_reward)
+    self.episode_reward = 0
+
+    if not self.episodes_past % UPDATE_TENSORBOARD_EVERY:
+        self.tensorboard.update_stats(average_reward=sum(self.episode_rewards[-UPDATE_TENSORBOARD_EVERY:])/UPDATE_TENSORBOARD_EVERY, epsilon=self.epsilon)
+    self.tensorboard.step += 1
+
+    self.episodes_past += 1
+    if self.episodes_past == UPDATE_PREDICT_MODEL:
         self.predict_model.set_weights(self.model.get_weights())
-        self.episodes = 0
+        self.episodes_past = 0
 
     if last_game_state["round"] == TRAINING_ROUNDS:
         for filename in glob.glob("models/*_recent"):

@@ -106,6 +106,7 @@ venv.bak/
 # custom
 .idea
 agent_code/big_bertha_v1/models
+agent_code/big_bertha_v1/tensorboard_logs
 screenshots/*.png
 screenshots/*.mp4
 screenshots/*.webm
