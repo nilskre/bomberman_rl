@@ -1,5 +1,5 @@
-from tensorflow.python.keras.callbacks import TensorBoard
 import tensorflow as tf
+from tensorflow.python.keras.callbacks import TensorBoard
 
 
 class ModifiedTensorBoard(TensorBoard):
@@ -38,5 +38,4 @@ class ModifiedTensorBoard(TensorBoard):
         with self.writer.as_default():
             for name, value in logs.items():
                 tf.summary.scalar(name, value, step=index)
-                self.step += 1
                 self.writer.flush()

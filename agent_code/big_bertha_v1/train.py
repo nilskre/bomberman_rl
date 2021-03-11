@@ -7,14 +7,15 @@ import numpy as np
 
 from agent_code.big_bertha_v1.experience_buffer import ExperienceBuffer
 from agent_code.big_bertha_v1.features import state_to_features
+from agent_code.big_bertha_v1.modifiedtensorboard import ModifiedTensorBoard
 from agent_code.big_bertha_v1.parameters import (ACTIONS, BATCH_SIZE,
                                                  EPSILON_DECAY, EPSILON_END,
                                                  EPSILON_START,
                                                  EXPERIENCE_BUFFER_SIZE_MIN,
                                                  GAMMA, REWARDS,
                                                  TRAINING_ROUNDS,
-                                                 UPDATE_PREDICT_MODEL, UPDATE_TENSORBOARD_EVERY)
-from agent_code.big_bertha_v1.modifiedtensorboard import ModifiedTensorBoard
+                                                 UPDATE_PREDICT_MODEL,
+                                                 UPDATE_TENSORBOARD_EVERY)
 
 
 def setup_training(self):
@@ -80,7 +81,7 @@ def reward_from_events(self, occurred_events: List[str]) -> int:
 
 
 def update_q_values(self):
-    if self.experience_buffer.size < EXPERIENCE_BUFFER_SIZE_MIN:
+    if not self.experience_buffer.filled and self.experience_buffer.memory_index < EXPERIENCE_BUFFER_SIZE_MIN:
         return
 
     states, actions, rewards, new_states = self.experience_buffer.sample()
