@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List
 
 import numpy as np
+import tensorflow.keras.backend as keras_backend
 from agent_code.big_bertha_v1.experience_buffer import ExperienceBuffer
 from agent_code.big_bertha_v1.features import state_to_features
 from agent_code.big_bertha_v1.modifiedtensorboard import ModifiedTensorBoard
@@ -16,7 +17,6 @@ from agent_code.big_bertha_v1.parameters import (ACTIONS, BATCH_SIZE,
                                                  UPDATE_TARGET_MODEL,
                                                  UPDATE_TENSORBOARD_EVERY)
 
-import tensorflow.keras.backend as keras_backend
 
 def setup_training(self):
     self.experience_buffer = ExperienceBuffer()
