@@ -1,7 +1,6 @@
 from collections import deque
 
 import numpy as np
-
 from agent_code.big_bertha_v1.parameters import (BATCH_SIZE,
                                                  EXPERIENCE_BUFFER_SIZE_MAX,
                                                  STATE_SHAPE)

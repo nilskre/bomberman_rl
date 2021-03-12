@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import List
 
 import numpy as np
-
 from agent_code.big_bertha_v1.experience_buffer import ExperienceBuffer
 from agent_code.big_bertha_v1.features import state_to_features
 from agent_code.big_bertha_v1.modifiedtensorboard import ModifiedTensorBoard
@@ -14,7 +13,7 @@ from agent_code.big_bertha_v1.parameters import (ACTIONS, BATCH_SIZE,
                                                  EXPERIENCE_BUFFER_SIZE_MIN,
                                                  GAMMA, REWARDS,
                                                  TRAINING_ROUNDS,
-                                                 UPDATE_PREDICT_MODEL,
+                                                 UPDATE_TARGET_MODEL,
                                                  UPDATE_TENSORBOARD_EVERY)
 
 
@@ -62,15 +61,15 @@ def end_of_round(self, last_game_state: dict, last_action: str, events: List[str
     self.tensorboard.step += 1
 
     self.episodes_past += 1
-    if self.episodes_past == UPDATE_PREDICT_MODEL:
-        self.predict_model.set_weights(self.model.get_weights())
+    if self.episodes_past == UPDATE_TARGET_MODEL:
+        self.target_model.set_weights(self.online_model.get_weights())
         self.episodes_past = 0
 
     if last_game_state["round"] == TRAINING_ROUNDS:
         for filename in glob.glob("models/*_recent"):
             os.rename(filename, filename[:-7])
         current_time = datetime.now().strftime("%H_%M_%S")
-        self.model.save("models/{}_recent".format(current_time))
+        self.online_model.save("models/{}_recent".format(current_time))
 
 
 def reward_from_events(self, occurred_events: List[str]) -> int:
@@ -86,12 +85,11 @@ def update_q_values(self):
 
     states, actions, rewards, new_states = self.experience_buffer.sample()
 
-    qs_current = self.model.predict(states)
-    qs_next_actual = self.predict_model.predict(new_states)
-    qs_next_train = self.model.predict(new_states)
-    qs_target = qs_current.copy()
+    qs_next_actual = self.target_model.predict(new_states)
+    qs_next_train = self.online_model.predict(new_states)
+    qs_target = self.online_model.predict(states)
 
     batch_index = np.arange(BATCH_SIZE, dtype=np.int8)
 
     qs_target[batch_index, actions] = rewards + GAMMA * qs_next_actual[batch_index, np.argmax(qs_next_train, axis=1)]
-    _ = self.model.fit(states, qs_target, verbose=0)
+    _ = self.online_model.fit(states, qs_target, verbose=0)

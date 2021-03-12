@@ -1,5 +1,4 @@
 import numpy as np
-
 from settings import BOMB_POWER, BOMB_TIMER, COLS, ROWS
 
 
