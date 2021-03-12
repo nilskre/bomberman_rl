@@ -16,6 +16,7 @@ from agent_code.big_bertha_v1.parameters import (ACTIONS, BATCH_SIZE,
                                                  UPDATE_TARGET_MODEL,
                                                  UPDATE_TENSORBOARD_EVERY)
 
+import tensorflow.keras.backend as keras_backend
 
 def setup_training(self):
     self.experience_buffer = ExperienceBuffer()
@@ -57,7 +58,11 @@ def end_of_round(self, last_game_state: dict, last_action: str, events: List[str
     self.episode_reward = 0
 
     if not self.episodes_past % UPDATE_TENSORBOARD_EVERY:
-        self.tensorboard.update_stats(average_reward=sum(self.episode_rewards[-UPDATE_TENSORBOARD_EVERY:])/UPDATE_TENSORBOARD_EVERY, epsilon=self.epsilon)
+        self.tensorboard.update_stats(
+            average_reward=sum(self.episode_rewards[-UPDATE_TENSORBOARD_EVERY:])/UPDATE_TENSORBOARD_EVERY,
+            epsilon=self.epsilon,
+            learning_rate=keras_backend.eval(self.online_model.optimizer.lr)
+        )
     self.tensorboard.step += 1
 
     self.episodes_past += 1

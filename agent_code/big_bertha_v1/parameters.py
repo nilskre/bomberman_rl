@@ -8,15 +8,15 @@ NUMBER_OF_ACTIONS = 6
 DENSE_LAYER_DIMS = 128
 
 # Hyperparameters
-ACTIVATION_FUNCTION = tf.keras.activations.elu(alpha=1.0)
-LOSS_FUNCTION = tf.keras.losses.Huber(delta=1.0)
+ACTIVATION_FUNCTION = tf.keras.activations.elu  # alpha=1.0
+LOSS_FUNCTION = tf.keras.losses.Huber()  # delta=1.0
 LEARNING_RATE = 0.01
 
 EXPERIENCE_BUFFER_SIZE_MIN = 8_192  # Batch size should be <1% of the total experience buffer size
 EXPERIENCE_BUFFER_SIZE_MAX = 65_536
 BATCH_SIZE = 64
 
-TRAINING_ROUNDS = 600
+TRAINING_ROUNDS = 20
 
 GAMMA = 0.95
 EPSILON_START = 1
